@@ -257,4 +257,41 @@ sub mod_nice_size {
     if($units[$u]){ return (int($fs*$dp)/$dp)." ".$units[$u]; } else{ return int($_[0]); }
 }
 
+###########################################################################
+
+=head2 IfPluginInstalled
+
+Checks to see if a given plugin is installed allowing one to turn on and off 
+elements of a theme accordingly.
+
+B<Attributes:>
+
+=over
+
+=item plugin
+
+The plugin ID you want to check to see is installed.
+
+=cut 
+
+B<Example:>
+
+    <mt:IfPluginInstalled plugin="AssetGallery">
+      <mt:if tag="EntryGalleryAssetCount" gt="0">
+      <link rel="stylesheet" href="<mt:StaticWebPath>plugins/AssetGallery/blog/slideshow.css" type="text/css" />
+      <link rel="stylesheet" href="<mt:StaticWebPath>plugins/AssetGallery/blog/jquery.jcarousel.css" type="text/css" />
+      </mt:if>
+    </mt:IfPluginInstalled>
+
+=for tags 
+
+=cut
+
+sub tag_plugin_installed {
+    my($ctx, $args, $cond) = @_;
+    my $p = $args->{'plugin'};
+    return 1 if (MT->component($p));
+    return 0;
+}
+
 1;

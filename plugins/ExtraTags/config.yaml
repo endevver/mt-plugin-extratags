@@ -3,7 +3,7 @@ key: Extra Tags
 description: A collection of extra template tags that might be helpful.
 author_name: Byrne Reese
 author_link: http://www.majordojo.com/
-version: 1.5
+version: 1.6
 
 tags:
   block:
@@ -11,6 +11,7 @@ tags:
     FolderHasIndex?: $ExtraTags::ExtraTags::Plugin::tag_has_index
     AssetEntries: $ExtraTags::ExtraTags::Plugin::tag_asset_entries
     IsTopLevelFolder?: $ExtraTags::ExtraTags::Plugin::tag_is_top_level
+    IfPluginInstalled?: $ExtraTags::ExtraTags::Plugin::tag_plugin_installed
   function:
     AssetModifiedDate: $ExtraTags::ExtraTags::Plugin::tag_asset_mod_date
     AssetFileSize: $ExtraTags::ExtraTags::Plugin::tag_asset_size
