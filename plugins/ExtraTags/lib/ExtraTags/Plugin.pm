@@ -294,4 +294,27 @@ sub tag_plugin_installed {
     return 0;
 }
 
+###########################################################################
+
+=head2 EntryWeekOfYear
+
+Returns the numerical week of year for the current entry in context.
+
+B<Example:>
+
+    <mt:Entries>
+      <mt:EntryTitle> - <mt:EntryWeekOfYear>
+    </mt:Entries>
+
+=for entry date
+
+=cut
+
+sub tag_week_of_year {
+    my ($ctx) = @_;
+    my $entry = $ctx->stash('entry');
+    my $week = substr($entry->week_number(), 4, length($entry->week_number()));
+    return $week || '';
+}
+
 1;
