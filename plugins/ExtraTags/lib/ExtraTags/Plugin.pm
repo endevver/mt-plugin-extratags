@@ -145,9 +145,8 @@ context.
 
 B<Example:>
 
-The following will output thumbnails for all of the assets embedded in all
-of the entries on the system. Each thumbnail will be square and have a
-max height/width of 100 pixels.
+The following will output the title of each entry with an asset associated 
+to it.
 
     <mt:Assets>
         <mt:AssetEntries>
@@ -163,7 +162,10 @@ sub tag_asset_entries {
     my ($ctx, $args, $cond) = @_;
     my $obj = $ctx->stash('asset')
         or return $ctx->_no_asset_error();
-    
+
+    my $builder = $ctx->stash('builder');
+    my $tokens  = $ctx->stash('tokens');
+
     my $place_class = MT->model('objectasset');
     my @places = $place_class->load({
         blog_id => $obj->blog_id || 0,
@@ -177,6 +179,8 @@ sub tag_asset_entries {
         next unless $entry_class->isa('MT::Entry');
         my $entry = $entry_class->load($place->object_id)
             or next;
+        # Only include published entries.
+        next unless ( $entry->status == MT::Entry::RELEASE() );
         local $vars->{'__first__'}   = ($count == 0);
         local $vars->{'__last__'}    = ($count == $#places);
         local $vars->{'__odd__'} = ($count % 2 ) == 1;
@@ -187,8 +191,8 @@ sub tag_asset_entries {
             or return $ctx->error($builder->errstr);
         $res .= $out;
     }
-    return _hdlr_pass_tokens_else(@_) unless $res eq '';
-    return $out;
+
+    return $res;
 }
 
 ###########################################################################
@@ -271,8 +275,6 @@ B<Attributes:>
 =item plugin
 
 The plugin ID you want to check to see is installed.
-
-=cut 
 
 B<Example:>
 

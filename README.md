@@ -48,6 +48,21 @@ A container tag that evaluates to true if the current folder in context contains
 
 Outputs the modification date of the current asset in context. See the L<Date> tag for supported attributes.
 
+## `<mt:AssetEntries></mt:AssetEntries>`
+
+Iterates over the list of entries associated with the current asset in context.
+
+**Example**
+
+The following will output the title of each entry with an asset associated to it.
+
+    <mt:Assets>
+        <mt:AssetEntries>
+            <$mt:EntryTitle$>
+        </mt:AssetEntries>
+    </mt:Assets>
+
+
 # Requesting Template Tags of Your Own
 
 Need a template tag for Movable Type? Ask us to write one for you. If it is quick and easy we will happily do so:
