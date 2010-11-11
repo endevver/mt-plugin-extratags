@@ -42,7 +42,7 @@ None.
 sub tag_has_pages {
     my ($ctx, $args, $cond) = @_;
     my $c = $ctx->stash('category')
-        or return _no_folder_error($ctx->stash('tag'));
+        or return _no_folder_error($ctx);
     require MT::Page;
     require MT::Placement;
     my $clause = ' = entry_entry_id';
@@ -72,7 +72,7 @@ None.
 sub tag_has_index {
     my ($ctx, $args, $cond) = @_;
     my $c = $ctx->stash('category')
-        or return _no_folder_error($ctx,$ctx->stash('tag'));
+        or return _no_folder_error($ctx);
     require MT::Placement;
     my $clause = ' = entry_id';
     my %args = (
@@ -93,6 +93,17 @@ sub _no_folder_error {
     return $ctx->error(MT->translate(
         "You used an '[_1]' tag outside of the context of a folder; " .
         "perhaps you mistakenly placed it outside of an 'MTFolders' " .
+        "container?", $tag_name
+    ));
+}
+
+sub _no_category_error {
+    my ($ctx) = @_;
+    my $tag_name = $ctx->stash('tag');
+    $tag_name = 'mt' . $tag_name unless $tag_name =~ m/^MT/i;
+    return $ctx->error(MT->translate(
+        "You used an '[_1]' tag outside of the context of a category; " .
+        "perhaps you mistakenly placed it outside of an 'MTCategories' " .
         "container?", $tag_name
     ));
 }
@@ -317,6 +328,118 @@ sub tag_week_of_year {
     my $entry = $ctx->stash('entry');
     my $week = substr($entry->week_number(), 4, length($entry->week_number()));
     return $week || '';
+}
+
+###########################################################################
+
+=head2 mt:HasChildCategory
+
+This template tag is a conditional block tag that looks to see if the
+current category in context has any child categories.
+
+B<Attributes:>
+
+None.
+
+=for tags plugin, block, container, conditional, category
+
+=cut
+sub tag_has_children {
+    my ($ctx, $args, $cond) = @_;
+    defined (my $c = MT::Template::Context::_get_category_context($ctx))
+        or return _no_category_error($ctx);
+    my $count = MT->model('category')->count({ parent => $c->id });
+    return $count > 0 ? 1 : 0;
+}
+
+sub tag_is_ancestor {
+    my ($ctx, $args, $cond) = @_;
+    my $class_type = $args->{class_type} || 'category';
+    require MT::Template::ContextHandlers;
+    defined (my $target = MT::Template::Context::_get_category_context($ctx))
+        or return _no_category_error($ctx);
+
+    my $tag_name = $ctx->stash('tag');
+    my $cursor;
+    if ($args->{category_id}) {
+        $cursor = MT->model($class_type)->load( $args->{category_id} );
+    } else {
+        ($cursor) = MT::Template::Context::cat_path_to_category($args->{category}, $ctx->stash('blog_id'), $class_type);
+    }
+    unless ($cursor) {
+        return $ctx->error(MT->translate(
+                               "Could not find category '[_1]' in tag [_2]",
+                               $args->{category_id} ? '#'.$args->{category_id} : $args->{category}, 
+                               $tag_name));
+    }
+    return 0 unless $cursor->parent;
+    return 0 if $cursor->id == $target->id; # Ancestors MUST precede the start
+    while ( $cursor = $cursor->parent_category ) {
+        if ($cursor->id == $target->id) {
+            # if the parent is the same as the target
+            # then return, otherwise go to the next parent
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+sub tag_is_descendent {
+    my ($ctx, $args, $cond) = @_;
+    my $class_type = $args->{class_type} || 'category';
+    require MT::Template::ContextHandlers;
+    defined (my $cursor = MT::Template::Context::_get_category_context($ctx))
+        or return _no_category_error($ctx);
+
+    my $tag_name = $ctx->stash('tag');
+    my $target;
+    if ($args->{category_id}) {
+        $target = MT->model($class_type)->load( $args->{category_id} );
+    } else {
+        ($target) = MT::Template::Context::cat_path_to_category($args->{category}, $ctx->stash('blog_id'), $class_type);
+    }
+    unless ($target) {
+        return $ctx->error(MT->translate(
+                               "Could not find category '[_1]' in tag [_2]",
+                               $args->{category_id} ? '#'.$args->{category_id} : $args->{category}, 
+                               $tag_name));
+    }
+    return 0 unless $cursor->parent;
+    return 0 if $cursor->id == $target->id; # Ancestors MUST precede the start
+    while ( $cursor = $cursor->parent_category ) {
+        if ($cursor->id == $target->id) {
+            # if the parent is the same as the target
+            # then return, otherwise go to the next parent
+            return 1;
+        }
+    }
+    return 0;
+}
+
+sub tag_is_sibling {
+    my ($ctx, $args, $cond) = @_;
+    my $class_type = $args->{class_type} || 'category';
+    require MT::Template::ContextHandlers;
+    defined (my $cursor = MT::Template::Context::_get_category_context($ctx))
+        or return _no_category_error($ctx);
+
+    my $tag_name = $ctx->stash('tag');
+    my $target;
+    if ($args->{category_id}) {
+        $target = MT->model($class_type)->load( $args->{category_id} );
+    } else {
+        ($target) = MT::Template::Context::cat_path_to_category($args->{category}, $ctx->stash('blog_id'), $class_type);
+    }
+    unless ($target) {
+        return $ctx->error(MT->translate(
+                               "Could not find category '[_1]' in tag [_2]",
+                               $args->{category_id} ? '#'.$args->{category_id} : $args->{category}, 
+                               $tag_name));
+    }
+
+    return 1 if ($cursor->parent == $target->parent);
+    return 0;
 }
 
 1;

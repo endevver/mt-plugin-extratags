@@ -12,6 +12,10 @@ tags:
     AssetEntries: $ExtraTags::ExtraTags::Plugin::tag_asset_entries
     IsTopLevelFolder?: $ExtraTags::ExtraTags::Plugin::tag_is_top_level
     IfPluginInstalled?: $ExtraTags::ExtraTags::Plugin::tag_plugin_installed
+    CategoryHasChildren?: $ExtraTags::ExtraTags::Plugin::tag_has_children
+    CategoryIsAncestor?: $ExtraTags::ExtraTags::Plugin::tag_is_ancestor
+    CategoryIsSibling?: $ExtraTags::ExtraTags::Plugin::tag_is_sibling
+    CategoryIsDescendent?: $ExtraTags::ExtraTags::Plugin::tag_is_descendent
   function:
     AssetModifiedDate: $ExtraTags::ExtraTags::Plugin::tag_asset_mod_date
     AssetFileSize: $ExtraTags::ExtraTags::Plugin::tag_asset_size
