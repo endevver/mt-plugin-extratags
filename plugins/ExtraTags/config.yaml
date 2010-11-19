@@ -16,6 +16,7 @@ tags:
     CategoryIsAncestor?: $ExtraTags::ExtraTags::Plugin::tag_is_ancestor
     CategoryIsSibling?: $ExtraTags::ExtraTags::Plugin::tag_is_sibling
     CategoryIsDescendent?: $ExtraTags::ExtraTags::Plugin::tag_is_descendent
+    EntryPrimaryCategory: $ExtraTags::ExtraTags::Plugin::tag_entry_category
   function:
     AssetModifiedDate: $ExtraTags::ExtraTags::Plugin::tag_asset_mod_date
     AssetFileSize: $ExtraTags::ExtraTags::Plugin::tag_asset_size

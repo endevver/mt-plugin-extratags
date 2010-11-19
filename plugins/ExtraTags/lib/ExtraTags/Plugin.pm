@@ -442,4 +442,23 @@ sub tag_is_sibling {
     return 0;
 }
 
+sub tag_entry_category {
+    my($ctx, $args, $cond) = @_;
+    my $e = $ctx->stash('entry')
+        or return $ctx->_no_entry_error();
+    my $cat = $e->category;
+    return '' unless $cat;
+    my $builder = $ctx->stash('builder');
+    my $tokens = $ctx->stash('tokens');
+    my $res = '';
+    local $ctx->{inside_mt_categories} = 1;
+    for my $cat (@$cats) {
+        local $ctx->{__stash}->{category} = $cat;
+        defined(my $out = $builder->build($ctx, $tokens, $cond))
+            or return $ctx->error( $builder->errstr );
+        $res .= $out;
+    }
+    $res;
+}
+
 1;
