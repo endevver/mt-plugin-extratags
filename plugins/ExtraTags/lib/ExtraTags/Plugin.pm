@@ -110,11 +110,11 @@ sub _no_category_error {
 
 ###########################################################################
 
-=head2 EntryModifiedDate
-                                                                                                      
+=head2 AssetModifiedDate
+
 Outputs the modification date of the current entry in context.
 See the L<Date> tag for supported attributes.
-                                                                                                      
+
 =for tags date
 
 =cut
@@ -125,6 +125,27 @@ sub tag_asset_mod_date {
         or return $ctx->_no_asset_error();
     $args->{ts} = $a->modified_on || $a->created_on;
     return MT::Template::Context::_hdlr_date($ctx, $args);
+}
+
+###########################################################################
+
+=head2 AssetModifiedBy
+
+Outputs the author responsible for modifying the current entry in context.
+
+=for tags date
+
+=cut
+
+sub tag_asset_mod_by {
+    my ($ctx, $args) = @_;
+    my $a = $ctx->stash('asset')
+        or return $ctx->_no_asset_error();
+
+    my $author_id = $a->modified_by || $a->created_by;
+    my $author = MT->model('author')->load($author_id);
+    return '' unless $author;
+    return $author->nickname || $author->name;
 }
 
 ###########################################################################
@@ -245,7 +266,7 @@ sub tag_is_top_level {
 
 =head2 nice_size
 
-Transforms an integer into a nicely formated file size, automatically selecting
+Transforms an integer into a nicely formatted file size, automatically selecting
 kB, MB, GB, etc accordingly. You can pass in, as a value to the modifier, the
 precision you would like to use (expressed as the number of decimal places)
 for outputted number/file size.

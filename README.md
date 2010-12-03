@@ -14,6 +14,18 @@ A template tag modifier designed for use with date strings. User is intended to 
     </mt:assets>
     </ul>
 
+## `nice_size`
+
+Transforms an integer into a nicely formatted file size, automatically selecting
+kB, MB, GB, etc accordingly. You can pass in, as a value to the modifier, the
+precision you would like to use (expressed as the number of decimal places)
+for outputted number/file size.
+
+**Example**
+
+    <$mt:AssetFileSize nice_size="2"$>
+
+
 # Template Tags
 
 ## `<mt:FolderHasPages>`
@@ -47,6 +59,10 @@ A container tag that evaluates to true if the current folder in context contains
 ## `<$mt:AssetModifiedDate$>`
 
 Outputs the modification date of the current asset in context. See the L<Date> tag for supported attributes.
+
+## `<$mt:AssetFileSize$>`
+
+Returns the file size, in bytes, of the asset in context.
 
 ## `<mt:AssetEntries></mt:AssetEntries>`
 
