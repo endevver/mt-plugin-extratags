@@ -463,6 +463,32 @@ sub tag_is_sibling {
     return 0;
 }
 
+###########################################################################
+
+=head2 EntryPrimaryCategory
+
+There is a template tag in Movable Type that does not behave quite like you'd expect. 
+The template tag "<mt:EntryCategory>" is not a container tag that allows you to access
+all aspects of the current entry's primary category. For legacy reasons, this tag
+instead simply returns to the current entry's primary category label.
+
+B<This> template tag provides what might otherwise expect from the mt:EntryCategory 
+tag. This tag is a block tag that can be used to output the current entries
+primary category label, as well as basename, as well as anything!
+
+B<Example:>
+
+    <mt:Entries>
+      <mt:EntryPrimaryCategory>
+        <p><$mt:EntryTitle$> is in <$mt:CategoryLabel$> which can be found in
+        <$mt:CategoryArchiveLink$></p>
+      </mt:EntryPrimaryCategory>
+    </mt:Entries>
+
+=for entry date
+
+=cut
+
 sub tag_entry_category {
     my($ctx, $args, $cond) = @_;
     my $e = $ctx->stash('entry')
