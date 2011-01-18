@@ -2,7 +2,7 @@
 package ExtraTags::Plugin;
 
 use strict;
-use MT::Util qw( ts2epoch );
+use MT::Util qw( ts2epoch remove_html );
 
 ###########################################################################
 
@@ -166,6 +166,53 @@ sub mod_days_old {
     my $now = time();
     my $diff = $now - $epoch;
     return int($diff / ( 60 * 60 * 24));
+}
+
+###########################################################################
+
+=head2 n_words
+
+A template tag modifier that transforms a string by eliminating all but the
+first N words from the text. The value passed to the modifier is the number
+of words to truncate to. If the value passed to the modifer is an elipses
+("...") then a elipses will be added to the end of the truncated string if 
+the truncated string does not end in a period (".").
+
+B<Examples:>
+
+    <mt:section n_words="10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem mauris
+    </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem
+
+    <mt:section n_words="10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem mauris
+    </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem...
+
+    <mt:section n_words="10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem mauris
+    </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                               
+=for tags date
+
+=cut
+
+sub mod_n_words {
+    my ($str, $val, $ctx) = @_;
+    return '' unless defined $str;
+    my $elip;
+    ($val,$elip) = ($val =~ /^(\d+)(\.\.\.)?$/);
+    $str = remove_html($str) || '';
+    my @words = split(/\s+/, $str);
+    my $max = @words > $val ? $val : @words;
+    my $text = join(' ', @words[0..$max]);
+    $text =~ s/[^A..Za..z0..9\.]$//i;
+    return $text . ($elip && @words > $val && $text !~ /\.$/ ? '...' : '');
 }
 
 ###########################################################################
