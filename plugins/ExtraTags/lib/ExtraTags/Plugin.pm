@@ -210,7 +210,7 @@ sub mod_n_words {
     $str = remove_html($str) || '';
     my @words = split(/\s+/, $str);
     my $max = @words > $val ? $val : @words;
-    my $text = join(' ', @words[0..$max]);
+    my $text = join(' ', grep { defined } @words[0..$max]);
     $text =~ s/[^A..Za..z0..9\.]$//i;
     return $text . ($elip && @words > $val && $text !~ /\.$/ ? '...' : '');
 }
