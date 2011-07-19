@@ -1,9 +1,9 @@
 name: Extra Tags
 key: Extra Tags
 description: A collection of extra template tags that might be helpful.
-author_name: Byrne Reese
-author_link: http://www.majordojo.com/
-version: 1.10
+author_name: Byrne Reese, Endevver LLC
+author_link: http://www.endevver.com/
+version: 1.13
 
 tags:
   block:
@@ -19,6 +19,7 @@ tags:
     EntryPrimaryCategory: $ExtraTags::ExtraTags::Plugin::tag_entry_category
   function:
     AssetModifiedDate: $ExtraTags::ExtraTags::Plugin::tag_asset_mod_date
+    AssetModifiedBy:   $ExtraTags::ExtraTags::Plugin::tag_asset_mod_by
     AssetFileSize: $ExtraTags::ExtraTags::Plugin::tag_asset_size
     EntryWeekOfYear: $ExtraTags::ExtraTags::Plugin::tag_week_of_year
     SearchOffset: $ExtraTags::ExtraTags::Plugin::tag_search_offset
@@ -30,3 +31,5 @@ tags:
       handler: $ExtraTags::ExtraTags::Plugin::mod_days_old
     nice_size: 
       handler: $ExtraTags::ExtraTags::Plugin::mod_nice_size
+    n_words: 
+      handler: $ExtraTags::ExtraTags::Plugin::mod_n_words

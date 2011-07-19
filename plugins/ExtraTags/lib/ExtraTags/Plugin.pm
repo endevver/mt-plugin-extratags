@@ -2,7 +2,7 @@
 package ExtraTags::Plugin;
 
 use strict;
-use MT::Util qw( ts2epoch );
+use MT::Util qw( ts2epoch remove_html );
 
 ###########################################################################
 
@@ -110,11 +110,11 @@ sub _no_category_error {
 
 ###########################################################################
 
-=head2 EntryModifiedDate
-                                                                                                      
+=head2 AssetModifiedDate
+
 Outputs the modification date of the current entry in context.
 See the L<Date> tag for supported attributes.
-                                                                                                      
+
 =for tags date
 
 =cut
@@ -125,6 +125,27 @@ sub tag_asset_mod_date {
         or return $ctx->_no_asset_error();
     $args->{ts} = $a->modified_on || $a->created_on;
     return MT::Template::Context::_hdlr_date($ctx, $args);
+}
+
+###########################################################################
+
+=head2 AssetModifiedBy
+
+Outputs the author responsible for modifying the current entry in context.
+
+=for tags date
+
+=cut
+
+sub tag_asset_mod_by {
+    my ($ctx, $args) = @_;
+    my $a = $ctx->stash('asset')
+        or return $ctx->_no_asset_error();
+
+    my $author_id = $a->modified_by || $a->created_by;
+    my $author = MT->model('author')->load($author_id);
+    return '' unless $author;
+    return $author->nickname || $author->name;
 }
 
 ###########################################################################
@@ -145,6 +166,53 @@ sub mod_days_old {
     my $now = time();
     my $diff = $now - $epoch;
     return int($diff / ( 60 * 60 * 24));
+}
+
+###########################################################################
+
+=head2 n_words
+
+A template tag modifier that transforms a string by eliminating all but the
+first N words from the text. The value passed to the modifier is the number
+of words to truncate to. If the value passed to the modifer is an elipses
+("...") then a elipses will be added to the end of the truncated string if 
+the truncated string does not end in a period (".").
+
+B<Examples:>
+
+    <mt:section n_words="10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem mauris
+    </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem
+
+    <mt:section n_words="10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem mauris
+    </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem...
+
+    <mt:section n_words="10">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem mauris
+    </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                               
+=for tags date
+
+=cut
+
+sub mod_n_words {
+    my ($str, $val, $ctx) = @_;
+    return '' unless defined $str;
+    my $elip;
+    ($val,$elip) = ($val =~ /^(\d+)(\.\.\.)?$/);
+    $str = remove_html($str) || '';
+    my @words = split(/\s+/, $str);
+    my $max = @words > $val ? $val : @words;
+    my $text = join(' ', grep { defined } @words[0..$max]);
+    $text =~ s/[^A-Za-z0-9\.]$//i;
+    return $text . ($elip && @words > $val && $text !~ /\.$/ ? '...' : '');
 }
 
 ###########################################################################
@@ -245,7 +313,7 @@ sub tag_is_top_level {
 
 =head2 nice_size
 
-Transforms an integer into a nicely formated file size, automatically selecting
+Transforms an integer into a nicely formatted file size, automatically selecting
 kB, MB, GB, etc accordingly. You can pass in, as a value to the modifier, the
 precision you would like to use (expressed as the number of decimal places)
 for outputted number/file size.
@@ -441,6 +509,32 @@ sub tag_is_sibling {
     return 1 if ($cursor->parent == $target->parent);
     return 0;
 }
+
+###########################################################################
+
+=head2 EntryPrimaryCategory
+
+There is a template tag in Movable Type that does not behave quite like you'd expect. 
+The template tag "<mt:EntryCategory>" is not a container tag that allows you to access
+all aspects of the current entry's primary category. For legacy reasons, this tag
+instead simply returns to the current entry's primary category label.
+
+B<This> template tag provides what might otherwise expect from the mt:EntryCategory 
+tag. This tag is a block tag that can be used to output the current entries
+primary category label, as well as basename, as well as anything!
+
+B<Example:>
+
+    <mt:Entries>
+      <mt:EntryPrimaryCategory>
+        <p><$mt:EntryTitle$> is in <$mt:CategoryLabel$> which can be found in
+        <$mt:CategoryArchiveLink$></p>
+      </mt:EntryPrimaryCategory>
+    </mt:Entries>
+
+=for entry date
+
+=cut
 
 sub tag_entry_category {
     my($ctx, $args, $cond) = @_;
