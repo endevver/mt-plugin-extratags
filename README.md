@@ -16,6 +16,60 @@ A template tag modifier designed for use with date strings. User is intended to 
 
 # Template Tags
 
+**This plugin offers far more template tags than are listed here. Documentation can be found for each tag in the plugins/ExtraTags/lib/ExtraTags/Plugin.pm file. Obviously this is not ideal. You can also get a definitive list of tags provided from plugins/ExtraTags/config.yaml.**
+
+## `<mt:IsTopLevelFolder>`
+## `<mt:IfPluginInstalled>`
+
+Checks to see if a given plugin is installed allowing one to turn on and off
+elements of a theme accordingly.
+
+**Attributes:**
+
+* plugin: The plugin ID you want to check to see is installed.
+
+**Example:**
+
+    <mt:IfPluginInstalled plugin="AssetGallery">
+      <mt:if tag="EntryGalleryAssetCount" gt="0">
+      <link rel="stylesheet" href="<mt:StaticWebPath>plugins/AssetGallery/blog/slideshow.css" type="text/css" />
+      <link rel="stylesheet" href="<mt:StaticWebPath>plugins/AssetGallery/blog/jquery.jcarousel.css" type="text/css" />
+      </mt:if>
+    </mt:IfPluginInstalled>
+
+## `<mt:CategoryHasChildren>`
+
+This template tag is a conditional block tag that looks to see if the
+current category in context has any child categories.
+
+## `<mt:CategoryIsAncestor>`
+## `<mt:CategoryIsSibling>`
+## `<mt:CategoryIsDescendent>`
+## `<mt:EntryPrimaryCategory>`
+
+Sets the current context to the current entry's primary category
+
+## `<mt:AssetFileSize>`
+## `<mt:EntryWeekOfYear>`
+## `<mt:SearchOffset>`
+
+Returns the raw offset of the current search results.
+
+## `<mt:SearchLimit>`
+
+Returns the raw limit of the current search results.
+## `<mt:SearchFrom>`
+
+Returns the effective starting position of the current result set. This is
+designed to be used in a string similar to: "Showing 1 to 10 of 30," where
+1 is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+
+## `<mt:SearchTo>`
+
+Returns the effective ending position of the current result set. This is
+designed to be used in a string similar to: "Showing 1 to 10 of 30," where
+1 is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+
 ## `<mt:FolderHasPages>`
 
 A container tag that evaluates to true if the current folder in context contains any published pages.
@@ -80,7 +134,7 @@ http://www.endevver.com/
 
 # Copyright
 
-Copyright 2009-2010, Endevver, LLC. All rights reserved.
+Copyright 2009-2011, Endevver, LLC. All rights reserved.
 
 # License
 
