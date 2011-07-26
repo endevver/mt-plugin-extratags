@@ -552,4 +552,12 @@ sub tag_entry_category {
     return $out;
 }
 
+sub tag_is_page {
+    my($ctx, $args, $cond) = @_;
+    my $entry = MT->model('entry')->load( $args->{id} );
+    return $ctx->error( "No entry or page could be loaded for " . $args->{id} )
+        unless $entry;
+    return $entry->class_type eq 'page';
+}
+
 1;

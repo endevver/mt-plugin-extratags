@@ -17,6 +17,7 @@ tags:
     CategoryIsSibling?: $ExtraTags::ExtraTags::Plugin::tag_is_sibling
     CategoryIsDescendent?: $ExtraTags::ExtraTags::Plugin::tag_is_descendent
     EntryPrimaryCategory: $ExtraTags::ExtraTags::Plugin::tag_entry_category
+    IsPage?: $ExtraTags::ExtraTags::Plugin::tag_is_page
   function:
     AssetModifiedDate: $ExtraTags::ExtraTags::Plugin::tag_asset_mod_date
     AssetModifiedBy:   $ExtraTags::ExtraTags::Plugin::tag_asset_mod_by
