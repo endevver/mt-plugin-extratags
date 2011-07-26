@@ -552,6 +552,16 @@ sub tag_entry_category {
     return $out;
 }
 
+<<<<<<< HEAD
+sub tag_is_page {
+    my($ctx, $args, $cond) = @_;
+    my $entry = MT->model('entry')->load( $args->{id} );
+    return $ctx->error( "No entry or page could be loaded for " . $args->{id} )
+        unless $entry;
+    return $entry->class_type eq 'page';
+}
+
+=======
 ###########################################################################
 
 =head2 SearchOffset
@@ -620,6 +630,5 @@ sub tag_search_to {
     my $page = $ctx->stash('search_page') || 1;
     return $page * $limit;
 }
-
 
 1;
