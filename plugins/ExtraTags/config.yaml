@@ -3,7 +3,7 @@ key: Extra Tags
 description: A collection of extra template tags that might be helpful.
 author_name: Byrne Reese, Endevver LLC
 author_link: http://www.endevver.com/
-version: 1.12
+version: 1.13
 
 tags:
   block:
@@ -23,6 +23,10 @@ tags:
     AssetModifiedBy:   $ExtraTags::ExtraTags::Plugin::tag_asset_mod_by
     AssetFileSize: $ExtraTags::ExtraTags::Plugin::tag_asset_size
     EntryWeekOfYear: $ExtraTags::ExtraTags::Plugin::tag_week_of_year
+    SearchOffset: $ExtraTags::ExtraTags::Plugin::tag_search_offset
+    SearchLimit: $ExtraTags::ExtraTags::Plugin::tag_search_limit
+    SearchFrom: $ExtraTags::ExtraTags::Plugin::tag_search_from
+    SearchTo: $ExtraTags::ExtraTags::Plugin::tag_search_to
   modifier:
     days_old: 
       handler: $ExtraTags::ExtraTags::Plugin::mod_days_old
