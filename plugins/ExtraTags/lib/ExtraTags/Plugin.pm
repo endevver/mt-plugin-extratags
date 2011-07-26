@@ -552,7 +552,6 @@ sub tag_entry_category {
     return $out;
 }
 
-<<<<<<< HEAD
 sub tag_is_page {
     my($ctx, $args, $cond) = @_;
     my $entry = MT->model('entry')->load( $args->{id} );
@@ -561,7 +560,6 @@ sub tag_is_page {
     return $entry->class_type eq 'page';
 }
 
-=======
 ###########################################################################
 
 =head2 SearchOffset
