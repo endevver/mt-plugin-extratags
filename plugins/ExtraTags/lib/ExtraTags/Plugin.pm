@@ -626,7 +626,10 @@ sub tag_search_to {
     my ($ctx) = @_;
     my $limit = $ctx->stash('limit');
     my $page = $ctx->stash('search_page') || 1;
-    return $page * $limit;
+    my $upper = $page * $limit;
+    my $max = $ctx->stash('count');
+    if ($max < $upper) { return $max; }
+    return $upper;
 }
 
 1;
