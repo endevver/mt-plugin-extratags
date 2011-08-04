@@ -559,4 +559,84 @@ sub tag_entry_category {
     return $out;
 }
 
+sub tag_is_page {
+    my($ctx, $args, $cond) = @_;
+    my $entry = MT->model('entry')->load( $args->{id} );
+    return $ctx->error( "No entry or page could be loaded for " . $args->{id} )
+        unless $entry;
+    return $entry->class_type eq 'page';
+}
+
+###########################################################################
+
+=head2 SearchOffset
+
+Returns the raw offset of the current search.
+
+=for search
+
+=cut
+
+sub tag_search_offset {
+    my ($ctx) = @_;
+    my $offset = $ctx->stash('offset');
+    return $offset || '0';
+}
+
+###########################################################################
+
+=head2 SearchLimit
+
+Returns the raw limit of the current search.
+
+=for search
+
+=cut
+
+sub tag_search_limit {
+    my ($ctx) = @_;
+    my $limit = $ctx->stash('limit');
+    return $limit || '0';
+}
+
+###########################################################################
+
+=head2 SearchFrom
+
+Returns the effective starting position of the current result set. This is
+designed to be used in a string similar to: "Showing 1 to 10 of 30," where
+1 is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+
+=for search
+
+=cut
+
+sub tag_search_from {
+    my ($ctx) = @_;
+    my $offset = $ctx->stash('offset');
+    return ($offset || '0') + 1;
+}
+
+###########################################################################
+
+=head2 SearchTo
+
+Returns the effective ending position of the current result set. This is
+designed to be used in a string similar to: "Showing 1 to 10 of 30," where
+1 is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+
+=for search
+
+=cut
+
+sub tag_search_to {
+    my ($ctx) = @_;
+    my $limit = $ctx->stash('limit');
+    my $page = $ctx->stash('search_page') || 1;
+    my $upper = $page * $limit;
+    my $max = $ctx->stash('count');
+    if ($max < $upper) { return $max; }
+    return $upper;
+}
+
 1;
