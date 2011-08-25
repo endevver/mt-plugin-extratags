@@ -3,11 +3,7 @@ key: Extra Tags
 description: A collection of extra template tags that might be helpful.
 author_name: Byrne Reese, Endevver LLC
 author_link: http://www.endevver.com/
-<<<<<<< HEAD
 version: 1.17
-=======
-version: 1.16
->>>>>>> 74966a9e21a901c5f3321c1a0316160cf723af97
 
 tags:
   block:
