@@ -3,7 +3,7 @@ key: Extra Tags
 description: A collection of extra template tags that might be helpful.
 author_name: Byrne Reese, Endevver LLC
 author_link: http://www.endevver.com/
-version: 1.15
+version: 1.17
 
 tags:
   block:
@@ -34,3 +34,5 @@ tags:
       handler: $ExtraTags::ExtraTags::Plugin::mod_nice_size
     n_words: 
       handler: $ExtraTags::ExtraTags::Plugin::mod_n_words
+    encode_json:
+      handler: $ExtraTags::ExtraTags::Plugin::mod_encode_json
