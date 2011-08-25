@@ -209,9 +209,16 @@ sub mod_n_words {
     ($val,$elip) = ($val =~ /^(\d+)(\.\.\.?)?$/);
     $str = remove_html($str) || '';
     my @words = split(/\s+/, $str);
+
+    # If number of words in string is less than n, then do nothing.
+    return $str if ($#words < $val);
+
     my $max = @words > $val ? $val : @words;
     my $text = join(' ', grep { defined } @words[0..$max]);
-    $text =~ s/[^A-Za-z0-9\.]$//i;
+
+    # strip all characters from string that are not likely to be relevant, excluding of
+    # course punctuation and the like.
+    $text =~ s/[^A-Za-z0-9\.\'\"\!\?\)\]]$//i;
     return $text . ($elip && @words > $val && $text !~ /\.$/ ? '...' : '');
 }
 
