@@ -559,12 +559,68 @@ sub tag_entry_category {
     return $out;
 }
 
+###########################################################################
+
+=head2 IsPage
+
+From time to time the mt:Entries tag is used to load both entries and pages.
+This is possible because in Movable Type the system barely differentiates 
+between the two. So in the event that you load a page via the mt:Entries 
+tag (say for example in search results), then the mt:IsPage tag can be used
+to disambiguates between an entry and a page.
+
+B<Example:>
+
+    <mt:Entries>
+      <mt:IsPage>
+        <p><$mt:EntryTitle$> is a page.</p>
+      <mt:Else>
+        <p><$mt:EntryTitle$> is an entry.</p>
+      </mt:IsPage>
+    </mt:Entries>
+
+=for entry page conditional
+
+=cut
+
 sub tag_is_page {
     my($ctx, $args, $cond) = @_;
     my $entry = MT->model('entry')->load( $args->{id} );
     return $ctx->error( "No entry or page could be loaded for " . $args->{id} )
         unless $entry;
     return $entry->class_type eq 'page';
+}
+
+###########################################################################
+
+=head2 EntryHasAssets
+
+This tag returns true if the current entry in context has assets associated
+with it, and false otherwise.
+
+B<Example:>
+
+    <mt:Entries>
+      <mt:EntryHasAssets>
+        <p><$mt:EntryTitle$> has assets associated with it.</p>
+      <mt:Else>
+        <p><$mt:EntryTitle$> has no assets.</p>
+      </mt:EntryHasAssets>
+    </mt:Entries>
+
+=for entry page conditional
+
+=cut
+
+sub tag_has_assets {
+    my($ctx, $args, $cond) = @_;
+    my $e = $ctx->stash('entry')
+        or return $ctx->_no_entry_error();
+    require MT::ObjectAsset;
+    my $join_str = '= asset_id';
+    return (MT->model('asset')->count({ class => '*' }, { join => MT::ObjectAsset->join_on(undef, {
+        asset_id => \$join_str, object_ds => 'entry', object_id => $e->id })}) > 0);
+
 }
 
 ###########################################################################
