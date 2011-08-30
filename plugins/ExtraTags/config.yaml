@@ -35,3 +35,5 @@ tags:
       handler: $ExtraTags::ExtraTags::Plugin::mod_nice_size
     n_words: 
       handler: $ExtraTags::ExtraTags::Plugin::mod_n_words
+    encode_json:
+      handler: $ExtraTags::ExtraTags::Plugin::mod_encode_json

@@ -206,7 +206,7 @@ sub mod_n_words {
     my ($str, $val, $ctx) = @_;
     return '' unless defined $str;
     my $elip;
-    ($val,$elip) = ($val =~ /^(\d+)(\.\.\.)?$/);
+    ($val,$elip) = ($val =~ /^(\d+)(\.\.\.?)?$/);
     $str = remove_html($str) || '';
     my @words = split(/\s+/, $str);
 
@@ -693,6 +693,20 @@ sub tag_search_to {
     my $max = $ctx->stash('count');
     if ($max < $upper) { return $max; }
     return $upper;
+}
+
+sub mod_encode_json {
+    my ($str, $val, $ctx) = @_;
+    return '' unless defined $str;
+    $str =~ s!\\!\\\\!g;    # \
+    $str =~ s!\/!\\\/!g;    # /
+    $str =~ s!"!\\"!g;      # "
+    $str =~ s!\f!\\f!g;     # \f
+    $str =~ s!\n!\\n!g;     # \n
+    $str =~ s!\r!\\r!g;     # \r
+    $str =~ s!\t!\\t!g;     # \t
+    $str =~ s!\0!\\0!g;
+    $str;
 }
 
 1;
