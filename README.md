@@ -1,14 +1,22 @@
-This plugin provides Movable Type users with an assortment of miscellaneous tags that do not ship with Movable Type by default. These tags are divided into several groups:
+This plugin provides Movable Type users with an assortment of miscellaneous
+tags that do not ship with Movable Type by default. These tags are divided
+into several groups:
 
 * [Modifiers](#modifiers)
   * days_old
   * nice_size
+  * n_words
+  * encode_json
 
 * [Function Tags](#functions)
   * AssetModifiedDate
   * AssetModifiedBy
   * AssetFileSize
   * EntryWeekOfYear
+  * SearchOffset
+  * SearchLimit
+  * SearchFrom
+  * SearchTo
 
 * [Conditional Tags](#condition)
   * FolderHasPages?
@@ -19,6 +27,8 @@ This plugin provides Movable Type users with an assortment of miscellaneous tags
   * CategoryIsAncestor?
   * CategoryIsSibling?
   * CategoryIsDescendent?
+  * IsPage?
+  * EntryHasAssets?
 
 * [Block/Container Tags](#block)
   * AssetEntries
@@ -30,7 +40,9 @@ This plugin provides Movable Type users with an assortment of miscellaneous tags
 
 ## `days_old`
 
-A template tag modifier designed for use with date strings. User is intended to use a date string formatted as a timestamp e.g. %Y%m%d%H%M%S. The tag will then output the number of days since the date in question.
+A template tag modifier designed for use with date strings. User is intended
+to use a date string formatted as a timestamp e.g. %Y%m%d%H%M%S. The tag will
+then output the number of days since the date in question.
 
 **Example**
 
@@ -42,14 +54,46 @@ A template tag modifier designed for use with date strings. User is intended to 
 
 ## `nice_size`
 
-Transforms an integer into a nicely formatted file size, automatically selecting
-kB, MB, GB, etc accordingly. You can pass in, as a value to the modifier, the
-precision you would like to use (expressed as the number of decimal places)
-for outputted number/file size.
+Transforms an integer into a nicely formatted file size, automatically
+selecting kB, MB, GB, etc accordingly. You can pass in, as a value to the
+modifier, the precision you would like to use (expressed as the number of
+decimal places) for outputted number/file size.
 
 **Example**
 
     <$mt:AssetFileSize nice_size="2"$>
+
+## `n_words`
+
+A template tag modifier that transforms a string by eliminating all but the
+first N words from the text. The value passed to the modifier is the number of
+words to truncate to. If the value passed to the modifier is an ellipsis
+("...") then a ellipsis will be added to the end of the truncated string if
+the truncated string does not end in a period (".").
+
+**Example**
+
+    <mt:section n_words="10"> Lorem ipsum dolor sit amet, consectetur
+    adipiscing elit. Quisque lorem mauris </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+lorem
+
+    <mt:section n_words="10"> Lorem ipsum dolor sit amet, consectetur
+    adipiscing elit. Quisque lorem mauris </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+lorem...
+
+    <mt:section n_words="10"> Lorem ipsum dolor sit amet, consectetur
+    adipiscing elit. Quisque lorem mauris </mt:section>
+
+Returns: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+## `encode_json`
+
+Escape a string to be used in a JSON object.
+
 
 <a name="functions"></a>
 
@@ -57,7 +101,8 @@ for outputted number/file size.
 
 ## `<$mt:AssetModifiedDate$>`
 
-Outputs the modification date of the current asset in context. See the L<Date> tag for supported attributes.
+Outputs the modification date of the current asset in context. See the L<Date>
+tag for supported attributes.
 
 ## `<$mt:AssetModifiedBy$>`
 
@@ -77,45 +122,6 @@ Returns the numerical week of year for the current entry in context.
       <mt:EntryTitle> - <mt:EntryWeekOfYear>
     </mt:Entries>
 
-<a name="condition"></a>
-
-# Conditional Tags
-
-**This plugin offers far more template tags than are listed here. Documentation can be found for each tag in the plugins/ExtraTags/lib/ExtraTags/Plugin.pm file. Obviously this is not ideal. You can also get a definitive list of tags provided from plugins/ExtraTags/config.yaml.**
-
-## `<mt:IsTopLevelFolder>`
-## `<mt:IfPluginInstalled>`
-
-Checks to see if a given plugin is installed allowing one to turn on and off
-elements of a theme accordingly.
-
-**Attributes:**
-
-* plugin: The plugin ID you want to check to see is installed.
-
-**Example:**
-
-    <mt:IfPluginInstalled plugin="AssetGallery">
-      <mt:if tag="EntryGalleryAssetCount" gt="0">
-      <link rel="stylesheet" href="<mt:StaticWebPath>plugins/AssetGallery/blog/slideshow.css" type="text/css" />
-      <link rel="stylesheet" href="<mt:StaticWebPath>plugins/AssetGallery/blog/jquery.jcarousel.css" type="text/css" />
-      </mt:if>
-    </mt:IfPluginInstalled>
-
-## `<mt:CategoryHasChildren>`
-
-This template tag is a conditional block tag that looks to see if the
-current category in context has any child categories.
-
-## `<mt:CategoryIsAncestor>`
-## `<mt:CategoryIsSibling>`
-## `<mt:CategoryIsDescendent>`
-## `<mt:EntryPrimaryCategory>`
-
-Sets the current context to the current entry's primary category
-
-## `<mt:AssetFileSize>`
-## `<mt:EntryWeekOfYear>`
 ## `<mt:SearchOffset>`
 
 Returns the raw offset of the current search results.
@@ -126,18 +132,24 @@ Returns the raw limit of the current search results.
 ## `<mt:SearchFrom>`
 
 Returns the effective starting position of the current result set. This is
-designed to be used in a string similar to: "Showing 1 to 10 of 30," where
-1 is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+designed to be used in a string similar to: "Showing 1 to 10 of 30," where 1
+is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
 
 ## `<mt:SearchTo>`
 
 Returns the effective ending position of the current result set. This is
-designed to be used in a string similar to: "Showing 1 to 10 of 30," where
-1 is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+designed to be used in a string similar to: "Showing 1 to 10 of 30," where 1
+is the SearchFrom, 10 is the SearchTo and 30 is the SearchResultCount.
+
+
+<a name="condition"></a>
+
+# Conditional Tags
 
 ## `<mt:FolderHasPages>`
 
-A container tag that evaluates to true if the current folder in context contains any published pages.
+A container tag that evaluates to true if the current folder in context
+contains any published pages.
 
 **Example**
 
@@ -151,7 +163,8 @@ A container tag that evaluates to true if the current folder in context contains
 
 ## `<mt:FolderHasIndex></mt:FolderHasIndex>`
 
-A container tag that evaluates to true if the current folder in context contains a page that has a baename equal to 'index.'
+A container tag that evaluates to true if the current folder in context
+contains a page that has a baename equal to 'index.'
 
 **Example**
 
@@ -162,8 +175,6 @@ A container tag that evaluates to true if the current folder in context contains
         <$mt:FolderLabel$> has NO index page. 
      </mt:FolderHasPages>
     </mt:Folders>
-
-<a name="block"></a>
 
 ## `<mt:IsTopLevelFolder>`
 
@@ -186,9 +197,8 @@ OR the first level.
 
 ## `<mt:IfPluginInstalled>`
 
-=head2 IfPluginInstalled
-
-Checks to see if a given plugin is installed allowing one to turn on and off elements of a theme accordingly.
+Checks to see if a given plugin is installed allowing one to turn on and off
+elements of a theme accordingly.
 
 **Attributes:**
 
@@ -205,41 +215,85 @@ Checks to see if a given plugin is installed allowing one to turn on and off ele
 
 ## `<mt:CategoryHasChildren>`
 
-This template tag is a conditional block tag that looks to see if the current category in context has any child categories.
+This template tag is a conditional block tag that looks to see if the current
+category in context has any child categories.
 
 ## `<mt:CategoryIsAncestor>`
 
-This template tag is a conditional block tag that looks to see if the current category is an ancestor to the specified category.
+This template tag is a conditional block tag that looks to see if the current
+category is an ancestor to the specified category.
 
 **Attributes:**
 
-* `category` - The name or path of the category which you want to check against.
+* `category` - The name or path of the category which you want to check
+  against.
 
 ## `<mt:CategoryIsSibling>`
 
-This template tag is a conditional block tag that looks to see if the current category is a sibling to the specified category, or in other words if the two categories share the same parent.
+This template tag is a conditional block tag that looks to see if the current
+category is a sibling to the specified category, or in other words if the two
+categories share the same parent.
 
 **Attributes:**
 
-* `category` - The name or path of the category which you want to check against.
+* `category` - The name or path of the category which you want to check
+  against.
 
 ## `<mt:CategoryIsDescendent>`
 
-This template tag is a conditional block tag that looks to see if the current category is a descendent to the specified category.
+This template tag is a conditional block tag that looks to see if the current
+category is a descendent to the specified category.
 
 **Attributes:**
 
-* `category` - The name or path of the category which you want to check against.
+* `category` - The name or path of the category which you want to check
+  against.
+
+## `<mt:IsPage>`
+
+From time to time the mt:Entries tag is used to load both entries and pages.
+This is possible because in Movable Type the system barely differentiates
+between the two. So in the event that you load a page via the mt:Entries tag
+(say for example in search results), then the mt:IsPage tag can be used to
+disambiguates between an entry and a page.
+
+**Example:**
+
+    <mt:Entries>
+        <mt:IsPage>
+            <p><$mt:EntryTitle$> is a page.</p>
+        <mt:Else>
+            <p><$mt:EntryTitle$> is an entry.</p>
+        </mt:IsPage>
+    </mt:Entries>
+
+## `<mt:EntryHasAssets>`
+
+This tag returns true if the current entry in context has assets associated
+with it, and false otherwise.
+
+**Example:**
+
+    <mt:Entries>
+        <mt:EntryHasAssets>
+            <p><$mt:EntryTitle$> has assets associated with it.</p>
+        <mt:Else>
+            <p><$mt:EntryTitle$> has no assets.</p>
+        </mt:EntryHasAssets>
+    </mt:Entries>
+
 
 # Block/Container Tags
 
 ## `<mt:AssetEntries></mt:AssetEntries>`
 
-Iterates over the list of entries associated with the current asset in context.
+Iterates over the list of entries associated with the current asset in
+context.
 
 **Example**
 
-The following will output the title of each entry with an asset associated to it.
+The following will output the title of each entry with an asset associated to
+it.
 
     <mt:Assets>
         <mt:AssetEntries>
@@ -249,14 +303,16 @@ The following will output the title of each entry with an asset associated to it
 
 ## `<mt:EntryPrimaryCategory></mt:EntryPrimaryCategory>`
 
-There is a template tag in Movable Type that does not behave quite like you'd expect. 
-The template tag "<mt:EntryCategory>" is not a container tag that allows you to access
-all aspects of the current entry's primary category. For legacy reasons, this tag
-instead simply returns to the current entry's primary category label.
+There is a template tag in Movable Type that does not behave quite like you'd
+expect. The template tag "mt:EntryCategory" is not a container tag that allows
+you to access all aspects of the current entry's primary category. For legacy
+reasons, this tag instead simply returns to the current entry's primary
+category label.
 
-B<This> template tag provides what might otherwise expect from the mt:EntryCategory 
-tag. This tag is a block tag that can be used to output the current entries
-primary category label, as well as basename, as well as anything!
+This template tag provides what might otherwise expect from the
+mt:EntryCategory tag. This tag is a block tag that can be used to output the
+current entries primary category label, as well as basename, as well as
+anything!
 
 **Example:**
 
@@ -269,16 +325,17 @@ primary category label, as well as basename, as well as anything!
 
 # Requesting Template Tags of Your Own
 
-Need a template tag for Movable Type? Ask us to write one for you. If it is quick and easy we will happily do so:
+Need a template tag for Movable Type? Ask us to write one for you. If it is
+quick and easy we will happily do so:
 
    http://help.endevver.com/
 
 # About Endevver
 
-We design and develop web sites, products and services with a focus on 
-simplicity, sound design, ease of use and community. We specialize in 
-Movable Type and offer numerous services and packages to help customers 
-make the most of this powerful publishing platform.
+We design and develop web sites, products and services with a focus on
+simplicity, sound design, ease of use and community. We specialize in Movable
+Type and offer numerous services and packages to help customers make the most
+of this powerful publishing platform.
 
 http://www.endevver.com/
 
