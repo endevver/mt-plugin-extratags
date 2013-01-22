@@ -623,6 +623,78 @@ sub tag_has_assets {
 
 }
 
+
+###########################################################################
+
+=head2 AssetFilter
+
+The asset filter block tag is an easy way to get a hold of the right child
+assets to publish content as needed.
+
+B<Example:>
+
+    <mt:AssetFilter parent="123" label_filter="thumbnail">
+        <h1><mt:AssetLabel></h1>
+        <p><mt:AssetURL></p>
+    </mt:AssetFilter>
+
+=for entry page conditional
+
+=cut
+
+sub asset_filter {
+    my ( $ctx, $args, $cond ) = @_;
+    my $builder = $ctx->stash('builder');
+    my $tokens  = $ctx->stash('tokens');
+    my $terms   = {};
+
+    $terms->{parent} = $args->{parent}
+        if $args->{parent};
+
+    if ( my $label_filter = $args->{label_filter} ) {
+        $terms->{label} = { like => "%$label_filter%" };
+    }
+    
+    # If a class was specified, use it. Otherwise, fall back to display assets
+    # of any class. (Only image assets will display by default.)
+    $terms->{class} = defined $args->{class} ? $args->{class} : '*';
+
+    # Tray to load the blog ID by looking for an argument, a blog in context, or
+    # fall back to the system level.
+    my $blog = $ctx->stash('blog');
+    $terms->{blog_id} = defined $args->{blog_id}  ? $args->{blog_id}
+                      : ref $blog                 ? $blog->id 
+                      : 0;
+
+    # Try to load assets with the built terms.
+    my @assets = MT->model('asset')->load( $terms );
+
+    my $res  = '';
+    my $i    = 0;
+    my $vars = $ctx->{__stash}{vars} ||= {};
+    
+    foreach my $asset (@assets) {
+        local $vars->{__first__}   = !$i;
+        local $vars->{__last__}    = !defined $assets[$i+1];
+        local $vars->{__odd__}     = ($i % 2) == 0; # 0-based $i
+        local $vars->{__even__}    = ($i % 2) == 1;
+        local $vars->{__counter__} = $i+1;
+
+        local $ctx->{__stash}{'asset'} = $asset;
+
+        my $out = $builder->build($ctx, $tokens);
+        if (!defined $out) {
+            # A error--perhaps a tag used out of context. Report it.
+            return $ctx->error( $builder->errstr );
+        }
+        $res .= $out;
+
+        $i++;
+    }
+
+    return $res;
+}
+
 ###########################################################################
 
 =head2 SearchOffset

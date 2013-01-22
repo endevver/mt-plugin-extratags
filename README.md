@@ -33,6 +33,7 @@ into several groups:
 * [Block/Container Tags](#block)
   * AssetEntries
   * EntryPrimaryCategory
+  * AssetFilter
 
 <a name="modifiers"></a>
 
@@ -322,6 +323,25 @@ anything!
         <$mt:CategoryArchiveLink$></p>
       </mt:EntryPrimaryCategory>
     </mt:Entries>
+
+## `<mt:AssetFilter></mt:AssetFilter>`
+
+This tag makes it easy to find the desired asset to publish. By specifying some criteria for a searcch, the correct asset or asset can be returned in this block tag.
+
+**Attributes:**
+
+* `parent` - specify the ID of a parent asset to return all child assets.
+* `class` - the class of the asset. By default all assets are returned, but this can be filtered with any asset type, such as "image" or "video."
+* `label_filter` - specify a piece of text to search for in the asset's Label field. Specifying "thumbnail" will find "My awesome thumbnail," for example.
+* `blog_id` - by default the current blog context is used; specify this argument to access a different blog.
+
+**Example:**
+
+    <mt:AssetFilter parent="123" label_filter="thumbnail">
+        <h1><mt:AssetLabel></h1>
+        <p><mt:AssetURL></p>
+    </mt:AssetFilter>
+
 
 # Requesting Template Tags of Your Own
 
