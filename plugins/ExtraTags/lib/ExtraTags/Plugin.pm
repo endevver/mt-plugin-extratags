@@ -22,7 +22,7 @@ sub tag_asset_size {
     my ( $ctx, $args, $cond ) = @_;
     my $asset = $ctx->stash('asset');
     # TODO - error if no asset
-    return -s $asset->file_path;    
+    return -s $asset->file_path;
 }
 
 ###########################################################################
@@ -657,7 +657,7 @@ sub asset_filter {
     
     # If a class was specified, use it. Otherwise, fall back to display assets
     # of any class. (Only image assets will display by default.)
-    $terms->{class} = defined $args->{class} ? $args->{class} : '*';
+    $terms->{class} = defined $args->{type} ? $args->{type} : '*';
 
     # Tray to load the blog ID by looking for an argument, a blog in context, or
     # fall back to the system level.

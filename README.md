@@ -331,7 +331,7 @@ This tag makes it easy to find the desired asset to publish. By specifying some 
 **Attributes:**
 
 * `parent` - specify the ID of a parent asset to return all child assets.
-* `class` - the class of the asset. By default all assets are returned, but this can be filtered with any asset type, such as "image" or "video."
+* `type` - the type of the asset. By default all assets are returned, but this can be filtered with any asset type, such as "image" or "video."
 * `label_filter` - specify a piece of text to search for in the asset's Label field. Specifying "thumbnail" will find "My awesome thumbnail," for example.
 * `blog_id` - by default the current blog context is used; specify this argument to access a different blog.
 
