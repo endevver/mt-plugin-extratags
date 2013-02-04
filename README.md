@@ -35,6 +35,12 @@ into several groups:
   * EntryPrimaryCategory
   * AssetFilter
 
+# Requirements
+
+* Movable Type 4.x
+* Movable Type 5.x
+
+
 <a name="modifiers"></a>
 
 # Modifiers
@@ -326,14 +332,19 @@ anything!
 
 ## `<mt:AssetFilter></mt:AssetFilter>`
 
-This tag makes it easy to find the desired asset to publish. By specifying some criteria for a searcch, the correct asset or asset can be returned in this block tag.
+This tag makes it easy to find the desired asset to publish. By specifying some
+criteria for a searcch, the correct asset or asset can be returned in this block
+tag.
 
 **Attributes:**
 
 * `parent` - specify the ID of a parent asset to return all child assets.
-* `type` - the type of the asset. By default all assets are returned, but this can be filtered with any asset type, such as "image" or "video."
-* `label_filter` - specify a piece of text to search for in the asset's Label field. Specifying "thumbnail" will find "My awesome thumbnail," for example.
-* `blog_id` - by default the current blog context is used; specify this argument to access a different blog.
+* `type` - the type of the asset. By default all assets are returned, but this
+  can be filtered with any asset type, such as "image" or "video."
+* `label_filter` - specify a piece of text to search for in the asset's Label
+  field. Specifying "thumbnail" will find "My awesome thumbnail," for example.
+* `blog_id` - by default the current blog context is used; specify this argument
+  to access a different blog.
 
 **Example:**
 
